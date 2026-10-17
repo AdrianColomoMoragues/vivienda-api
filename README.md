@@ -4,7 +4,7 @@
 
 API REST que estima el **precio de venta de un piso en València** a partir de su ubicación y sus características, con un **intervalo del 90 % calibrado**. Entrenada con 27 000 viviendas anunciadas en idealista en 2018 y servida con FastAPI y Docker. Incluye una web con un mapa: haces clic, rellenas el formulario y obtienes la tasación.
 
-> 🔗 **Demo:** *(pendiente de desplegar)*
+> 🔗 **Demo:** [*(pendiente de desplegar)](https://vivienda-api-79ot.onrender.com/)*
 
 ![Web del tasador](docs/tasador.png)
 
