@@ -1,0 +1,7 @@
+-r requirements.txt
+pytest>=8
+httpx>=0.27
+ruff>=0.5
+rdata>=0.11          # solo para regenerar los datos desde los .rda (python -m vivienda.datos)
+matplotlib>=3.8      # informe técnico (Documentation.ipynb)
+ipykernel

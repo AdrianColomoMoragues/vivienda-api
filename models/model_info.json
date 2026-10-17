@@ -1,0 +1,425 @@
+{
+  "modelo": "hist_gradient_boosting",
+  "objetivo": "log(precio)",
+  "n_viviendas": 27309,
+  "n_edificios": 12409,
+  "n_train": 21830,
+  "n_test": 5479,
+  "validacion": "partición por edificio (ningún edificio aparece en train y test a la vez)",
+  "cv": {
+    "ridge": {
+      "mae_eur": 37811.991979507104,
+      "mediana_error_eur": 21107.348125590936,
+      "mape_pct": 18.992407048975764,
+      "mdape_pct": 14.748858807459664,
+      "rmse_log": 0.24371269153211828,
+      "r2_log": 0.8633039386704378,
+      "segundos": 3.1
+    },
+    "random_forest": {
+      "mae_eur": 32930.97547221467,
+      "mediana_error_eur": 17530.47743842884,
+      "mape_pct": 16.52047219097183,
+      "mdape_pct": 12.125245285643564,
+      "rmse_log": 0.22129921123536322,
+      "r2_log": 0.8872907807821838,
+      "segundos": 58.8
+    },
+    "hist_gradient_boosting": {
+      "mae_eur": 32595.15290424786,
+      "mediana_error_eur": 17984.365584400144,
+      "mape_pct": 16.3157430520647,
+      "mdape_pct": 12.655415421500905,
+      "rmse_log": 0.21343827244993255,
+      "r2_log": 0.8951558257663694,
+      "segundos": 52.6
+    }
+  },
+  "test": {
+    "mae_eur": 31602.93968675598,
+    "mediana_error_eur": 17386.192734501936,
+    "mape_pct": 16.293813623745038,
+    "mdape_pct": 12.495351169139807,
+    "rmse_log": 0.21807183593215462,
+    "r2_log": 0.8872510394043528
+  },
+  "intervalos": {
+    "nivel": 0.9,
+    "metodo": "HGB cuantílico (5 % y 95 %) + calibración conformal (CQR)",
+    "ajuste_log": 0.07099104574947715,
+    "cobertura_calibracion_sin_ajuste": 0.8130232558139535,
+    "cobertura_test": 0.9041795948165724,
+    "anchura_mediana_pct": 74.35381315079405,
+    "cobertura_por_tramo": {
+      "Q1 (más baratos)": 0.8785919540229885,
+      "Q2": 0.9294032023289666,
+      "Q3": 0.9456845238095238,
+      "Q4 (más caros)": 0.8641344046749452
+    },
+    "ajuste_log_final": 0.0626891480033502
+  },
+  "importancia_permutacion": {
+    "metros": 0.22817846075200848,
+    "dist_centro_km": 0.13727442733697726,
+    "dist_blasco_km": 0.033707658108480955,
+    "ascensor": 0.02927664433445095,
+    "banos": 0.02483633277506415,
+    "longitud": 0.024090333215823732,
+    "anio_construccion": 0.015444697253128964,
+    "dormitorios": 0.013348509426162359,
+    "calidad_catastral": 0.01190217001858455,
+    "planta": 0.010594455799487895,
+    "estado": 0.010064308457926057,
+    "barrio": 0.00814578050647471,
+    "latitud": 0.008144148705740073,
+    "trimestre": 0.006721286434521095,
+    "parking": 0.005836446865170891,
+    "piscina": 0.005342091726296188,
+    "dist_metro_km": 0.005255593453586549,
+    "terraza": 0.004171321893062402,
+    "aire_acondicionado": 0.0037459314591825,
+    "plantas_edificio": 0.002228322491860757,
+    "viviendas_edificio": 0.0017421723981693392,
+    "exterior": 0.0008042524841335441,
+    "equipamiento": 0.0007380656825925813,
+    "armarios_empotrados": 0.0002731363096306727,
+    "trastero": 0.00023925258173809194,
+    "portero": 0.00021201852965750944,
+    "duplex": 0.00014035384040577136,
+    "orientacion_norte": 0.00012687845041443603,
+    "atico": 0.00011821252378469982,
+    "orientacion_sur": 9.293409655153906e-05,
+    "orientacion_este": 4.838348120239089e-05,
+    "orientacion_oeste": 3.6658827033675403e-05,
+    "jardin": 7.2711611234121955e-06,
+    "estudio": 0.0
+  },
+  "fuga_duplicados": {
+    "aleatoria": {
+      "mae_eur": 27892.413158800682,
+      "mediana_error_eur": 15182.84830728361,
+      "mape_pct": 14.180626835766372,
+      "mdape_pct": 10.500223945086876,
+      "rmse_log": 0.19040013193274458,
+      "r2_log": 0.9173363057103626
+    },
+    "por_vivienda": {
+      "mae_eur": 29403.91244244061,
+      "mediana_error_eur": 15975.88487299504,
+      "mape_pct": 14.877399623919022,
+      "mdape_pct": 11.149132854598946,
+      "rmse_log": 0.1990854383360356,
+      "r2_log": 0.9096227106321793
+    },
+    "por_edificio": {
+      "mae_eur": 32644.883485163366,
+      "mediana_error_eur": 18023.45564570921,
+      "mape_pct": 16.21549513922708,
+      "mdape_pct": 12.490690913672374,
+      "rmse_log": 0.21367991987926957,
+      "r2_log": 0.8958863326275663
+    },
+    "anuncios": 33523,
+    "viviendas": 27309,
+    "edificios": 12409
+  },
+  "fuente": "idealista18 (ODbL 1.0), anuncios de venta de València en 2018",
+  "barrios": {
+    "Aiora": {
+      "euros_m2_mediana": 1374.0,
+      "viviendas": 584
+    },
+    "Albors": {
+      "euros_m2_mediana": 1594.0,
+      "viviendas": 243
+    },
+    "Arrancapins": {
+      "euros_m2_mediana": 1850.0,
+      "viviendas": 958
+    },
+    "Barrio de Favara": {
+      "euros_m2_mediana": 1205.0,
+      "viviendas": 189
+    },
+    "Benicalap": {
+      "euros_m2_mediana": 1079.0,
+      "viviendas": 1210
+    },
+    "Beniferri": {
+      "euros_m2_mediana": 2211.0,
+      "viviendas": 15
+    },
+    "Benimaclet": {
+      "euros_m2_mediana": 1640.0,
+      "viviendas": 506
+    },
+    "Beteró": {
+      "euros_m2_mediana": 1392.0,
+      "viviendas": 181
+    },
+    "Campanar": {
+      "euros_m2_mediana": 1600.0,
+      "viviendas": 255
+    },
+    "Camí Fondo": {
+      "euros_m2_mediana": 1708.0,
+      "viviendas": 145
+    },
+    "Camí Reial": {
+      "euros_m2_mediana": 1110.0,
+      "viviendas": 253
+    },
+    "Camí de Vera": {
+      "euros_m2_mediana": 1850.0,
+      "viviendas": 115
+    },
+    "Ciutat Fallera": {
+      "euros_m2_mediana": 766.0,
+      "viviendas": 226
+    },
+    "Ciutat Jardí": {
+      "euros_m2_mediana": 1709.0,
+      "viviendas": 223
+    },
+    "Ciutat Universitària": {
+      "euros_m2_mediana": 2255.0,
+      "viviendas": 118
+    },
+    "Ciutat de les Arts i de les Ciencies": {
+      "euros_m2_mediana": 2236.0,
+      "viviendas": 304
+    },
+    "El Botànic": {
+      "euros_m2_mediana": 2065.0,
+      "viviendas": 288
+    },
+    "El Cabanyal-El Canyamelar": {
+      "euros_m2_mediana": 1442.0,
+      "viviendas": 849
+    },
+    "El Calvari": {
+      "euros_m2_mediana": 1208.0,
+      "viviendas": 172
+    },
+    "El Carme": {
+      "euros_m2_mediana": 2215.0,
+      "viviendas": 350
+    },
+    "El Grau": {
+      "euros_m2_mediana": 1514.0,
+      "viviendas": 344
+    },
+    "El Mercat": {
+      "euros_m2_mediana": 2291.0,
+      "viviendas": 316
+    },
+    "El Pilar": {
+      "euros_m2_mediana": 1973.0,
+      "viviendas": 291
+    },
+    "El Pla del Remei": {
+      "euros_m2_mediana": 3378.0,
+      "viviendas": 486
+    },
+    "Els Orriols": {
+      "euros_m2_mediana": 855.0,
+      "viviendas": 743
+    },
+    "En Corts": {
+      "euros_m2_mediana": 1247.0,
+      "viviendas": 543
+    },
+    "Exposició": {
+      "euros_m2_mediana": 2731.0,
+      "viviendas": 261
+    },
+    "Fonteta de Sant Lluìs": {
+      "euros_m2_mediana": 777.0,
+      "viviendas": 134
+    },
+    "Gran Vía": {
+      "euros_m2_mediana": 2819.0,
+      "viviendas": 450
+    },
+    "Jaume Roig": {
+      "euros_m2_mediana": 2304.0,
+      "viviendas": 207
+    },
+    "L'Amistat": {
+      "euros_m2_mediana": 1369.0,
+      "viviendas": 206
+    },
+    "L'Hort de Senabre": {
+      "euros_m2_mediana": 1112.0,
+      "viviendas": 542
+    },
+    "L'Illa Perduda": {
+      "euros_m2_mediana": 1422.0,
+      "viviendas": 160
+    },
+    "La Carrasca": {
+      "euros_m2_mediana": 1958.0,
+      "viviendas": 66
+    },
+    "La Creu Coberta": {
+      "euros_m2_mediana": 1065.0,
+      "viviendas": 228
+    },
+    "La Creu del Grau": {
+      "euros_m2_mediana": 1413.0,
+      "viviendas": 384
+    },
+    "La Fontsanta": {
+      "euros_m2_mediana": 971.0,
+      "viviendas": 163
+    },
+    "La Llum": {
+      "euros_m2_mediana": 1377.0,
+      "viviendas": 134
+    },
+    "La Petxina": {
+      "euros_m2_mediana": 1767.0,
+      "viviendas": 604
+    },
+    "La Punta": {
+      "euros_m2_mediana": 1713.0,
+      "viviendas": 142
+    },
+    "La Raiosa": {
+      "euros_m2_mediana": 1280.0,
+      "viviendas": 619
+    },
+    "La Roqueta": {
+      "euros_m2_mediana": 2009.0,
+      "viviendas": 312
+    },
+    "La Seu": {
+      "euros_m2_mediana": 2595.0,
+      "viviendas": 214
+    },
+    "La Vega Baixa": {
+      "euros_m2_mediana": 1857.0,
+      "viviendas": 102
+    },
+    "La Xerea": {
+      "euros_m2_mediana": 2905.0,
+      "viviendas": 274
+    },
+    "Les Tendetes": {
+      "euros_m2_mediana": 1194.0,
+      "viviendas": 119
+    },
+    "Malilla": {
+      "euros_m2_mediana": 1436.0,
+      "viviendas": 569
+    },
+    "Marxalenes": {
+      "euros_m2_mediana": 1225.0,
+      "viviendas": 305
+    },
+    "Mestalla": {
+      "euros_m2_mediana": 2275.0,
+      "viviendas": 411
+    },
+    "Mont-Olivet": {
+      "euros_m2_mediana": 1413.0,
+      "viviendas": 593
+    },
+    "Morvedre": {
+      "euros_m2_mediana": 1497.0,
+      "viviendas": 408
+    },
+    "Na Rovella": {
+      "euros_m2_mediana": 1101.0,
+      "viviendas": 306
+    },
+    "Natzaret": {
+      "euros_m2_mediana": 762.0,
+      "viviendas": 195
+    },
+    "Nou Benicalap": {
+      "euros_m2_mediana": 1816.0,
+      "viviendas": 351
+    },
+    "Nou Campanar": {
+      "euros_m2_mediana": 2309.0,
+      "viviendas": 194
+    },
+    "Nou Moles": {
+      "euros_m2_mediana": 1258.0,
+      "viviendas": 1026
+    },
+    "Patraix": {
+      "euros_m2_mediana": 1360.0,
+      "viviendas": 776
+    },
+    "Penya-Roja": {
+      "euros_m2_mediana": 2723.0,
+      "viviendas": 372
+    },
+    "Playa de la Malvarrosa": {
+      "euros_m2_mediana": 1339.0,
+      "viviendas": 384
+    },
+    "Russafa": {
+      "euros_m2_mediana": 2195.0,
+      "viviendas": 1068
+    },
+    "Safranar": {
+      "euros_m2_mediana": 1450.0,
+      "viviendas": 269
+    },
+    "Sant Antoni": {
+      "euros_m2_mediana": 1415.0,
+      "viviendas": 321
+    },
+    "Sant Francesc": {
+      "euros_m2_mediana": 2911.0,
+      "viviendas": 638
+    },
+    "Sant Isidre": {
+      "euros_m2_mediana": 1141.0,
+      "viviendas": 307
+    },
+    "Sant Llorenç": {
+      "euros_m2_mediana": 2097.0,
+      "viviendas": 272
+    },
+    "Sant Marcellí": {
+      "euros_m2_mediana": 950.0,
+      "viviendas": 321
+    },
+    "Sant Pau": {
+      "euros_m2_mediana": 2433.0,
+      "viviendas": 361
+    },
+    "Soternes": {
+      "euros_m2_mediana": 1298.0,
+      "viviendas": 160
+    },
+    "Tormos": {
+      "euros_m2_mediana": 1112.0,
+      "viviendas": 428
+    },
+    "Torrefiel": {
+      "euros_m2_mediana": 987.0,
+      "viviendas": 1033
+    },
+    "Tres Forques": {
+      "euros_m2_mediana": 940.0,
+      "viviendas": 493
+    },
+    "Trinitat": {
+      "euros_m2_mediana": 1740.0,
+      "viviendas": 259
+    },
+    "Vara de Quart": {
+      "euros_m2_mediana": 1152.0,
+      "viviendas": 227
+    },
+    "fuera": {
+      "euros_m2_mediana": 1183.0,
+      "viviendas": 34
+    }
+  }
+}

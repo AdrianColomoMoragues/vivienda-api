@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tasador de pisos en València</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root {
+    --bg: #fcfcfb; --card: #ffffff; --text: #0b0b0b; --muted: #52514e;
+    --border: #e4e3df; --accent: #2a78d6; --error: #c62828; --soft: #eef4fc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1a1a19; --card: #242423; --text: #f0efec; --muted: #c3c2b7;
+            --border: #3a3936; --accent: #3987e5; --error: #ef6b6b; --soft: #22303f; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+         background: var(--bg); color: var(--text); line-height: 1.5; }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 16px; }
+  h1 { margin: 0 0 4px; font-size: 1.6rem; }
+  h2 { font-size: 1rem; margin: 18px 0 8px; }
+  p.sub { margin: 0 0 20px; color: var(--muted); }
+  .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  #map { height: 380px; border-radius: 10px; border: 1px solid var(--border); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  label { display: flex; flex-direction: column; font-size: .85rem; color: var(--muted); gap: 4px; }
+  input, select { font: inherit; color: var(--text); background: var(--bg); padding: 7px 9px;
+          border: 1px solid var(--border); border-radius: 8px; width: 100%; }
+  .checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 4px 12px; }
+  .checks label { flex-direction: row; align-items: center; gap: 8px; color: var(--text); font-size: .9rem; }
+  .checks input { width: auto; }
+  button { margin-top: 16px; font: inherit; font-weight: 600; color: #fff; background: var(--accent);
+           border: 0; border-radius: 8px; padding: 10px 18px; cursor: pointer; width: 100%; }
+  .loc { margin-top: 8px; font-size: .9rem; color: var(--muted); min-height: 1.4em; }
+  .result { margin-top: 16px; display: none; background: var(--soft); border-radius: 10px; padding: 16px; }
+  .price { font-size: 2rem; font-weight: 700; }
+  .muted { color: var(--muted); font-size: .9rem; }
+  .bar { position: relative; height: 10px; background: var(--border); border-radius: 5px; margin: 10px 0 4px; }
+  .bar span { position: absolute; top: -3px; width: 4px; height: 16px; background: var(--accent); border-radius: 2px; }
+  .error { color: var(--error); }
+  .legend { background: var(--card); color: var(--text); padding: 6px 8px; border-radius: 6px; font-size: .75rem;
+            line-height: 1.5; border: 1px solid var(--border); }
+  .legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px;
+              border: 1px solid #0002; }
+  footer { margin-top: 24px; font-size: .85rem; color: var(--muted); }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>🏠 Tasador de pisos en València</h1>
+  <p class="sub">Haz clic en el mapa para situar el piso, rellena sus características y obtén el precio estimado
+     con un intervalo del 90 %. Modelo entrenado con anuncios de venta de idealista de 2018.</p>
+
+  <div class="layout">
+    <section class="card">
+      <div id="map" role="application" aria-label="Mapa de València"></div>
+      <div class="loc" id="loc">Haz clic en el mapa para elegir la ubicación.</div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <form class="card" id="f">
+      <div class="grid">
+        <label>Superficie (m²)<input name="metros" type="number" min="25" max="500" value="95" required></label>
+        <label>Dormitorios<input name="dormitorios" type="number" min="0" max="10" value="3" required></label>
+        <label>Baños<input name="banos" type="number" min="1" max="6" value="2" required></label>
+        <label>Planta (0 = bajo)<input name="planta" type="number" min="-1" max="30" value="3"></label>
+        <label>Año de construcción<input name="anio_construccion" type="number" min="1800" max="2018" value="1975"></label>
+        <label>Plantas del edificio<input name="plantas_edificio" type="number" min="1" max="40" placeholder="opcional"></label>
+        <label>Estado
+          <select name="estado">
+            <option value="buen_estado" selected>Buen estado</option>
+            <option value="a_reformar">A reformar</option>
+            <option value="nueva">Obra nueva</option>
+          </select></label>
+        <label>Exterior / interior
+          <select name="exterior">
+            <option value="exterior" selected>Exterior</option>
+            <option value="interior">Interior</option>
+          </select></label>
+        <label>Equipamiento
+          <select name="equipamiento">
+            <option value="cocina_y_muebles" selected>Cocina y muebles</option>
+            <option value="cocina_sin_muebles">Cocina, sin muebles</option>
+            <option value="sin_cocina_ni_muebles">Sin cocina ni muebles</option>
+          </select></label>
+      </div>
+      <h2>Extras</h2>
+      <div class="checks">
+        <label><input type="checkbox" name="ascensor" checked> Ascensor</label>
+        <label><input type="checkbox" name="aire_acondicionado" checked> Aire acondicionado</label>
+        <label><input type="checkbox" name="terraza"> Terraza</label>
+        <label><input type="checkbox" name="parking"> Plaza de garaje</label>
+        <label><input type="checkbox" name="trastero"> Trastero</label>
+        <label><input type="checkbox" name="armarios_empotrados"> Armarios empotrados</label>
+        <label><input type="checkbox" name="piscina"> Piscina</label>
+        <label><input type="checkbox" name="portero"> Portero</label>
+        <label><input type="checkbox" name="atico"> Ático</label>
+        <label><input type="checkbox" name="orientacion_sur"> Orientación sur</label>
+      </div>
+      <button type="submit">Tasar</button>
+    </form>
+  </div>
+
+  <footer>
+    API documentada en <a href="/docs">/docs</a> · métricas en <a href="/model-info">/model-info</a>.
+    Datos: <a href="https://github.com/paezha/idealista18">idealista18</a> (ODbL 1.0) ·
+    mapa © colaboradores de OpenStreetMap. Los precios son de anuncios (no de compraventas) de 2018.
+  </footer>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const eur = v => v.toLocaleString("es-ES", { maximumFractionDigits: 0 }) + " €";
+const $ = id => document.getElementById(id);
+let punto = { lat: 39.4699, lng: -0.3763 };   // plaza del Ayuntamiento
+
+const map = L.map("map").setView([punto.lat, punto.lng], 13);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 18, attribution: "© OpenStreetMap"
+}).addTo(map);
+// Coropletas: mediana de €/m² de los anuncios de cada barrio
+const ESCALA = [[1000, "#e8f1fb"], [1400, "#b9d4f1"], [1800, "#82b1e6"], [2200, "#4a89d6"], [2800, "#2a64b0"],
+                [Infinity, "#173f78"]];
+const color = v => v == null ? "transparent" : ESCALA.find(([lim]) => v < lim)[1];
+fetch("/barrios.geojson").then(r => r.json()).then(gj => {
+  L.geoJSON(gj, {
+    style: f => ({ color: "#2a64b0", weight: 1, fillColor: color(f.properties.euros_m2), fillOpacity: 0.45 }),
+    onEachFeature: (f, layer) => {
+      layer.bindTooltip(`${f.properties.barrio}` + (f.properties.euros_m2 ? ` · ${eur(f.properties.euros_m2)}/m²` : ""));
+      layer.on("click", e => ubicar(e.latlng.lat, e.latlng.lng));
+    }
+  }).addTo(map);
+  const ley = L.control({ position: "bottomright" });
+  ley.onAdd = () => {
+    const div = L.DomUtil.create("div", "legend");
+    let lo = 0;
+    div.innerHTML = "<b>€/m² (mediana)</b><br>" + ESCALA.map(([lim, c]) => {
+      const t = lim === Infinity ? `≥ ${lo.toLocaleString("es-ES")}` : (lo ? `${lo.toLocaleString("es-ES")} – ` : "< ") + lim.toLocaleString("es-ES");
+      lo = lim;
+      return `<i style="background:${c}"></i>${t}`;
+    }).join("<br>");
+    return div;
+  };
+  ley.addTo(map);
+});
+const marker = L.marker([punto.lat, punto.lng], { draggable: true }).addTo(map);
+
+async function ubicar(lat, lng) {
+  punto = { lat, lng };
+  marker.setLatLng([lat, lng]);
+  try {
+    const r = await fetch(`/barrio?latitud=${lat}&longitud=${lng}`);
+    const j = await r.json();
+    if (!r.ok) { $("loc").innerHTML = `<span class="error">${j.detail}</span>`; return false; }
+    $("loc").textContent = `${j.barrio} · ${j.dist_centro_km} km al centro · ${j.dist_metro_km} km al metro`
+      + (j.euros_m2_mediana ? ` · mediana del barrio ${eur(j.euros_m2_mediana)}/m²` : "");
+    return true;
+  } catch { $("loc").textContent = ""; return true; }
+}
+map.on("click", e => ubicar(e.latlng.lat, e.latlng.lng));
+marker.on("dragend", () => { const p = marker.getLatLng(); ubicar(p.lat, p.lng); });
+ubicar(punto.lat, punto.lng);
+
+$("f").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const f = new FormData(ev.target);
+  const body = { latitud: punto.lat, longitud: punto.lng };
+  for (const [k, v] of f.entries()) {
+    if (v === "on") continue;
+    if (v === "") continue;
+    body[k] = isNaN(Number(v)) ? v : Number(v);
+  }
+  ev.target.querySelectorAll("input[type=checkbox]").forEach(c => body[c.name] = c.checked);
+  const out = $("result");
+  out.style.display = "block";
+  out.innerHTML = '<span class="muted">Calculando…</span>';
+  try {
+    const r = await fetch("/predict", { method: "POST", headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify(body) });
+    const j = await r.json();
+    if (!r.ok) {
+      const msg = Array.isArray(j.detail) ? j.detail.map(d => d.msg).join("; ") : j.detail;
+      out.innerHTML = `<span class="error">${msg}</span>`;
+      return;
+    }
+    const [lo, hi] = j.intervalo_90_eur;
+    const pos = 100 * (j.precio_eur - lo) / (hi - lo);
+    const comp = j.euros_m2_barrio
+      ? ` (mediana del barrio: ${eur(j.euros_m2_barrio)}/m², ${j.euros_m2 > j.euros_m2_barrio ? "por encima" : "por debajo"})`
+      : "";
+    out.innerHTML = `
+      <div class="muted">Precio estimado en ${j.barrio}</div>
+      <div class="price">${eur(j.precio_eur)}</div>
+      <div class="bar"><span style="left: calc(${pos}% - 2px)"></span></div>
+      <div class="muted">Intervalo del 90 %: ${eur(lo)} – ${eur(hi)}</div>
+      <div class="muted">${eur(j.euros_m2)}/m²${comp}</div>`;
+  } catch (e) {
+    out.innerHTML = `<span class="error">No se pudo contactar con la API.</span>`;
+  }
+});
+</script>
+</body>
+</html>
